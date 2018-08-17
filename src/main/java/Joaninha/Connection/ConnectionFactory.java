@@ -1,8 +1,3 @@
-package Joaninha.Model.Bean;
-
-import Joaninha.Connection.ConnectionFactory;
-import javax.persistence.EntityManager;
-
 /*
  * Copyright (C) 2018 rafael
  *
@@ -19,29 +14,26 @@ import javax.persistence.EntityManager;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package Joaninha.Connection;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+
 /**
  *
  * @author rafael
  */
-public class NewClass {
+public class ConnectionFactory {
 
-    /**
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
+    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("JoaninhaPU");
 
-        Usuario u = new Usuario();
-        u.setUser("teste");
-
-        EntityManager em = new ConnectionFactory().getConnection();
-
-        em.getTransaction().begin();
-        em.persist(u);
-        em.getTransaction().commit();
-
-        em.close();
-
-
+    public EntityManager getConnection() {
+        return emf.createEntityManager();
     }
+    
+    public static void setCloseConnection() {
+        emf.close();
+    }
+    
 }
