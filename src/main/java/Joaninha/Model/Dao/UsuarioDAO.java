@@ -1,7 +1,3 @@
-package Joaninha.Model.Bean;
-
-import Joaninha.Model.Dao.UsuarioDAO;
-
 /*
  * Copyright (C) 2018 rafael
  *
@@ -18,33 +14,14 @@ import Joaninha.Model.Dao.UsuarioDAO;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package Joaninha.Model.Dao;
+
+import Joaninha.Model.Bean.Usuario;
+
 /**
  *
  * @author rafael
  */
-public class NewClass {
-
-    /**
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        
-        UsuarioDAO uDAO = new UsuarioDAO();
-        Usuario u = new Usuario();
-        u.setUser("teste2");
-        
-        try {
-            uDAO.salvar(u);
-            for(Usuario user : uDAO.findEntities(Usuario.class)){
-                System.out.println("Usuario: " + user.getUser());
-            }
-            //System.out.println(uDAO.findById(Usuario.class, 1L));
-
-
-        } catch (Exception e) {
-        }
-        
-
-    }
+public class UsuarioDAO extends GenenicoDAO<Usuario>{
+    
 }

@@ -17,13 +17,16 @@
 package Joaninha.Model.Bean;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 /**
  *
@@ -31,57 +34,65 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "tb_users")
-public class Usuario implements Serializable {
+public class Usuario implements EntidadeBase, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
-    private Integer user_id;
-    
+    private Integer id;
+
     @Column(name = "usuario")
     private String user_name;
-    
+
     @Column(name = "name")
     private String name;
-    
+
     @Column(name = "pass")
     private String pass;
-    
-    @Column(name = "created")
-    private Timestamp created;
-    
+
     @Column(name = "change_pass")
     private Boolean change_pass;
-    
+
     @Column(name = "lock")
     private Boolean lock;
-    
+
     @Column(name = "email")
     private String email;
-    
+
     @Column(name = "acesso")
     private String acesso;
-    
-    @Column(name = "lastlogin")
-    private Timestamp lastlogin;
-    
-    @Column(name = "lastlogout")
-    private Timestamp lastlogout;
-    
+
     @Column(name = "cracha")
     private String cracha;
-    
+
     @Column(name = "computador")
     private String computador;
-    
+
     @Column(name = "user_computador")
     private String user_computador;
-    
+
     @Column(name = "failed_access_count")
     private Integer failed_access_count;
-    
+
     @Column(name = "turno")
     private String turno;
+    
+    @Column(name = "created")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date created;
+    
+    @Column(name = "lastlogin")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastlogin;
+    
+    @Column(name = "lastlogout")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date lastlogout;
+    
+    @Version
+    private Integer versao;
 
     public Usuario() {
     }
@@ -91,20 +102,29 @@ public class Usuario implements Serializable {
         this.pass = pass;
     }
 
-    public Usuario(Integer user_id, String pass, Boolean change_pass, Boolean lock, Integer failed_access_count) {
-        this.user_id = user_id;
+    public Usuario(Integer id, String pass, Boolean change_pass, Boolean lock, Integer failed_access_count) {
+        this.id = id;
         this.pass = pass;
         this.change_pass = change_pass;
         this.lock = lock;
         this.failed_access_count = failed_access_count;
     }
 
-    public Integer getUser_id() {
-        return user_id;
+    @Override
+    public Integer getId() {
+        return id;
     }
 
-    public void setUser_id(Integer user_id) {
-        this.user_id = user_id;
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getUser_name() {
+        return user_name;
+    }
+
+    public void setUser_name(String user_name) {
+        this.user_name = user_name;
     }
 
     public String getUser() {
@@ -129,14 +149,6 @@ public class Usuario implements Serializable {
 
     public void setPass(String pass) {
         this.pass = pass;
-    }
-
-    public Timestamp getCreated() {
-        return created;
-    }
-
-    public void setCreated(Timestamp created) {
-        this.created = created;
     }
 
     public Boolean getChange_pass() {
@@ -169,22 +181,6 @@ public class Usuario implements Serializable {
 
     public void setAcesso(String acesso) {
         this.acesso = acesso;
-    }
-
-    public Timestamp getLastlogin() {
-        return lastlogin;
-    }
-
-    public void setLastlogin(Timestamp lastlogin) {
-        this.lastlogin = lastlogin;
-    }
-
-    public Timestamp getLastlogout() {
-        return lastlogout;
-    }
-
-    public void setLastlogout(Timestamp lastlogout) {
-        this.lastlogout = lastlogout;
     }
 
     public String getCracha() {
@@ -227,9 +223,28 @@ public class Usuario implements Serializable {
         this.turno = turno;
     }
 
-    
+    public Date getCreated() {
+        return created;
+    }
 
-    
-    
-    
+    public void setCreated(Date created) {
+        this.created = created;
+    }
+
+    public Date getLastlogin() {
+        return lastlogin;
+    }
+
+    public void setLastlogin(Date lastlogin) {
+        this.lastlogin = lastlogin;
+    }
+
+    public Date getLastlogout() {
+        return lastlogout;
+    }
+
+    public void setLastlogout(Date lastlogout) {
+        this.lastlogout = lastlogout;
+    }
+
 }
