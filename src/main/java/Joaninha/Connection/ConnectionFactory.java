@@ -26,14 +26,53 @@ import javax.persistence.Persistence;
  */
 public class ConnectionFactory {
 
-    private static final EntityManagerFactory emf = Persistence.createEntityManagerFactory("JoaninhaPU");
+    private static final ThreadLocal<EntityManager> threadLocal = new ThreadLocal<>();
+    private static EntityManagerFactory factory;
 
-    public EntityManager getConnection() {
-        return emf.createEntityManager();
+    /**
+     * Cria uma entity manager factory Ãºnica e o retorna em todas as demais
+     * chamadas
+     *
+     * @return
+     */
+    public static EntityManagerFactory getFactory() {
+        if (factory == null || !factory.isOpen()) {
+            factory = Persistence.createEntityManagerFactory("JoaninhaPU");
+        }
+        return factory;
     }
-    
-    public static void setCloseConnection() {
-        emf.close();
+
+    /**
+     * Cria um entity manager unico (se criar = true) para a thread e o retorna
+     * em todas as demais chamadas
+     *
+     * @param criar
+     * @return
+     */
+    public static EntityManager em(boolean criar) {
+        EntityManager em = (EntityManager) threadLocal.get();
+        if (em == null || !em.isOpen()) {
+            if (criar) {
+                em = getFactory().createEntityManager();
+                threadLocal.set(em);
+            }
+        } else {
+            if (!criar) {
+                em.close();
+                factory.close();
+            }
+        }
+        return em;
     }
-    
+
+    /**
+     * Cria um entity manager Ãºnico para a thread e o retorna em todas as
+     * demais chamadas
+     *
+     * @return
+     */
+    public static EntityManager em() {
+        return em(true);
+    }
+
 }

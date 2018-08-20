@@ -1,9 +1,5 @@
-package Joaninha.Model.Bean;
-
-import Joaninha.Model.Dao.UsuarioDAO;
-
 /*
- * Copyright (C) 2018 rafael
+ * Copyright (C) 2017 rafael.lopes
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,33 +14,23 @@ import Joaninha.Model.Dao.UsuarioDAO;
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package joaninha.util;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 /**
  *
- * @author rafael
+ * @author rafael.lopes
  */
-public class NewClass {
+public class ComboBox {
 
-    /**
-     *
-     * @param args
-     */
-    public static void main(String[] args) {
-        
-        UsuarioDAO uDAO = new UsuarioDAO();
-        Usuario u = new Usuario();
-        u.setUser("teste2");
-        
-        try {
-            uDAO.salvar(u);
-            for(Usuario user : uDAO.findEntities(Usuario.class)){
-                System.out.println("Usuario: " + user.getUser());
+    public static int getKeyForValue(String value, TreeMap<Integer, String> category) {
+        for (Map.Entry<Integer, String> entry : category.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                return entry.getKey();
             }
-            //System.out.println(uDAO.findById(Usuario.class, 1L));
-
-
-        } catch (Exception e) {
         }
-        
-
+        return 0;
     }
 }

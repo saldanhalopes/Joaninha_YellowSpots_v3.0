@@ -16,15 +16,15 @@
  */
 package Joaninha.Model.Dao;
 
-import Joaninha.Model.Bean.EntidadeBase;
-import java.io.Serializable;
+import Joaninha.Connection.ConnectionFactory;
+import Joaninha.Interface.EntidadeBase;
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.RollbackException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 
 /**
  *
@@ -33,13 +33,9 @@ import javax.persistence.criteria.Root;
  */
 public class GenenicoDAO<T extends EntidadeBase> {
 
-    public EntityManager getEntityManager() {
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("JoaninhaPU");
-        return emf.createEntityManager();
-    }
 
     public T salvar(T t) throws Exception {
-        EntityManager em = getEntityManager();
+        EntityManager em = ConnectionFactory.em();
         try {
             em.getTransaction().begin();
             if (t.getId() == null) {
@@ -53,14 +49,17 @@ public class GenenicoDAO<T extends EntidadeBase> {
                 t = em.merge(t);
             }
             em.getTransaction().commit();
-        } finally {
+        }catch(Exception ex){
+            em.getTransaction().rollback();
+            throw new Exception(ex);
+        }finally {
             em.close();
         }
         return t;
     }
 
     public void remover(Class<T> cls, Integer id) throws Exception {
-        EntityManager em = getEntityManager();
+        EntityManager em = ConnectionFactory.em();
         T t = em.find(cls, id);
         try {
             em.getTransaction().begin();
@@ -74,7 +73,7 @@ public class GenenicoDAO<T extends EntidadeBase> {
     }
 
     public T findById(Class<T> cls, Integer id) throws Exception {
-        EntityManager em = getEntityManager();
+        EntityManager em = ConnectionFactory.em();
         T t = null;
         try {
             t = em.find(cls, id);
@@ -87,15 +86,15 @@ public class GenenicoDAO<T extends EntidadeBase> {
     }
 
     public List<T> findEntities(Class<T> cls) {
-        return findEntities(cls, true, -1, -1);
+        return findList(cls, true, -1, -1);
     }
 
     public List<T> findEntities(Class<T> cls, int maxResults, int firstResult) {
-        return findEntities(cls, false, maxResults, firstResult);
+        return findList(cls, false, maxResults, firstResult);
     }
 
-    private List<T> findEntities(Class<T> cls, boolean all, int maxResults, int firstResult) {
-        EntityManager em = getEntityManager();
+    private List<T> findList(Class<T> cls, boolean all, int maxResults, int firstResult) {
+        EntityManager em = ConnectionFactory.em();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             cq.select(cq.from(cls));
@@ -111,7 +110,7 @@ public class GenenicoDAO<T extends EntidadeBase> {
     }
 
     public int getCount(Class<T> cls) {
-        EntityManager em = getEntityManager();
+        EntityManager em = ConnectionFactory.em();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
             Root<T> rt = cq.from(cls);
